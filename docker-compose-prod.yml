@@ -1,0 +1,51 @@
+version: "3"
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/prod.Dockerfile
+        container_name: checkout-api
+        ports:
+            - "8000:8000"
+        environment:
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_DATABASE=sr_checkout
+            - DB_USERNAME=user
+            - DB_PASSWORD=password
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+        healthcheck:
+            test: curl --fail http://localhost:8000 || exit 1
+            interval: 10s
+            timeout: 10s
+            retries: 15
+        networks:
+            - microservice-networks
+    db:
+        image: mysql:8.0
+        ports: 
+            - "3306:3306"
+        command: --default-authentication-plugin=mysql_native_password
+        container_name: checkout-db
+        environment:
+            MYSQL_DATABASE: sr_checkout
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+            MYSQL_ROOT_PASSWORD: secret 
+        volumes:
+            - ./docker:/etc/mysql/conf.d
+            - microservice-persistent:/var/lib/mysql
+        networks:
+            - microservice-networks
+        # avoid db issue db_1          | mbind: Operation not permitted
+        security_opt:
+             - seccomp:unconfined
+        restart: always
+volumes:
+    microservice-persistent:
+networks:
+    microservice-networks:
+        driver: bridge

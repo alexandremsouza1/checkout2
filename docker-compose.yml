@@ -1,0 +1,40 @@
+version: "3"
+services:
+    app:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        container_name: checkout-api
+        ports:
+            - "8001-8099:8000"
+        volumes:
+            - .:/var/www/html
+        depends_on:
+            - db
+        networks:
+            - mup_network
+    db:
+        image: mysql:8.0
+        container_name: checkout-db
+        ports:
+            - "3306:3306"
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_DATABASE: sr_checkout
+            MYSQL_USER: user
+            MYSQL_PASSWORD: password
+            MYSQL_ROOT_PASSWORD: secret
+        volumes:
+            - ./docker:/etc/mysql/conf.d
+            - microservice-persistent:/var/lib/mysql
+        networks:
+            - mup_network
+        # avoid db issue db_1          | mbind: Operation not permitted
+        security_opt:
+            - seccomp:unconfined
+        restart: always
+volumes:
+    microservice-persistent:
+networks:
+    mup_network:
+        name: mup_network

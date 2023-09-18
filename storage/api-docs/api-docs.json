@@ -1,0 +1,866 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Register Microservice",
+        "description": "Register Microservice API Documentation",
+        "contact": {
+            "email": "administrativo@mobiup.com.br"
+        },
+        "license": {
+            "name": "MIT License",
+            "url": ""
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://a770-177-221-180-123.ngrok-free.app",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/clients/send-code": {
+            "post": {
+                "summary": "Send verification code to client",
+                "operationId": "ddaadc3370625ab3aca76f44ab182443",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpfCnpj": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "choice": {
+                                        "type": "string",
+                                        "example": "email"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Code sent successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                }
+            }
+        },
+        "/api/clients/check-code": {
+            "get": {
+                "summary": "Check verification code for client",
+                "operationId": "96a2480bbaa7a07f947a6e4b41839849",
+                "parameters": [
+                    {
+                        "name": "cpfCnpj",
+                        "in": "query",
+                        "description": "CPF or CNPJ of the client",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Verification code",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Code is valid"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Code is invalid"
+                    }
+                }
+            }
+        },
+        "/api/clients/cards": {
+            "get": {
+                "summary": "Get cards for client",
+                "operationId": "f952b2eb4765b14a93c982ffbe22407e",
+                "parameters": [
+                    {
+                        "name": "cpfCnpj",
+                        "in": "query",
+                        "description": "CPF or CNPJ of the client",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card information retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "document": {
+                                                        "type": "string"
+                                                    },
+                                                    "ct": {
+                                                        "type": "string"
+                                                    },
+                                                    "iv": {
+                                                        "type": "string"
+                                                    },
+                                                    "s": {
+                                                        "type": "string"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "deleted_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Card successfully retrieved"
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a card for client",
+                "operationId": "0f8481dfe832129d9eae2176dd520ed0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpfCnpj": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "card": {
+                                        "properties": {
+                                            "ct": {
+                                                "type": "string"
+                                            },
+                                            "iv": {
+                                                "type": "string"
+                                            },
+                                            "s": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Card created successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/cards/{id}": {
+            "put": {
+                "summary": "Update a card for client",
+                "operationId": "44d6b5e7bbeaf4614bff260960a613a2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the card",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpfCnpj": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "card": {
+                                        "properties": {
+                                            "ct": {
+                                                "type": "string"
+                                            },
+                                            "iv": {
+                                                "type": "string"
+                                            },
+                                            "s": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Card updated successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Card not found"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a card for client",
+                "operationId": "484cbf8bfbce5a0d8bdae4e9784db72c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the card",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Card not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/registration-status": {
+            "get": {
+                "summary": "Get registration status for client",
+                "operationId": "d1b85ec1f5e85518d6d81d1f5137a7f6",
+                "parameters": [
+                    {
+                        "name": "document",
+                        "in": "query",
+                        "description": "CPF or CNPJ of the client",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Status successfully obtained",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "userStatus": {
+                                                    "type": "string",
+                                                    "example": "company"
+                                                }
+                                            },
+                                            "type": "object",
+                                            "nullable": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Status successfully obtained"
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/validation-cpf": {
+            "post": {
+                "summary": "Validate client's CPF and birth date",
+                "operationId": "4eedd92bea7060a14ec913b2b103c8d8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpf": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "birth_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2000-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Validation successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation successful"
+                                        },
+                                        "valid": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/finish-register": {
+            "post": {
+                "summary": "Finish client registration",
+                "operationId": "87198080e16700e2bbab87aa95eb0283",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpf": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "birth_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2000-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Registration completed successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/company": {
+            "get": {
+                "summary": "Get a client company",
+                "operationId": "647ee572bdb2125a7112128d03a8b875",
+                "parameters": [
+                    {
+                        "name": "document",
+                        "in": "query",
+                        "description": "CPF or CNPJ",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "220.197.900-68"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company successfully get"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new client company",
+                "operationId": "7416f7810e3d3522b8bb69f91cd585a5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpfCnpj": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "company": {
+                                        "properties": {
+                                            "socialName": {
+                                                "type": "string",
+                                                "example": "Razão Social da Empresa"
+                                            },
+                                            "businessKey": {
+                                                "type": "string",
+                                                "example": "1"
+                                            },
+                                            "cnpj": {
+                                                "type": "string",
+                                                "example": "57.813.468/0001-12"
+                                            },
+                                            "latitude": {
+                                                "type": "string",
+                                                "example": "-20.4681346"
+                                            },
+                                            "longitude": {
+                                                "type": "string",
+                                                "example": "-45.4215668"
+                                            },
+                                            "address": {
+                                                "properties": {
+                                                    "postalCode": {
+                                                        "type": "string",
+                                                        "example": "35570-000"
+                                                    },
+                                                    "street": {
+                                                        "type": "string",
+                                                        "example": "Av Teste"
+                                                    },
+                                                    "neighborhood": {
+                                                        "type": "string",
+                                                        "example": "Bairro Exemplo"
+                                                    },
+                                                    "city": {
+                                                        "type": "string",
+                                                        "example": "Cidade Exemplo"
+                                                    },
+                                                    "state": {
+                                                        "type": "string",
+                                                        "example": "SP"
+                                                    },
+                                                    "streetNumber": {
+                                                        "type": "string",
+                                                        "example": "123"
+                                                    },
+                                                    "complement": {
+                                                        "type": "string",
+                                                        "example": "AP 2101, Torre A"
+                                                    },
+                                                    "reference": {
+                                                        "type": "string",
+                                                        "example": "Próximo ao posto"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Company created successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/logistic": {
+            "get": {
+                "summary": "Get a client logistic information",
+                "operationId": "e4ff0374a440cc073346383b96fb1516",
+                "parameters": [
+                    {
+                        "name": "document",
+                        "in": "query",
+                        "description": "CPF or CNPJ",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "220.197.900-68"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Logistic successfully get"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create client's logistic information",
+                "operationId": "957f764260d3d7c2b8dbee7f53cde6c5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpfCnpj": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "logistic": {
+                                        "properties": {
+                                            "attendanceMode": {
+                                                "type": "string",
+                                                "example": "digital"
+                                            },
+                                            "openingStatus": {
+                                                "type": "string",
+                                                "example": "open"
+                                            },
+                                            "availableDays": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "MON",
+                                                        "TUE",
+                                                        "WED",
+                                                        "THU",
+                                                        "FRI",
+                                                        "SAT"
+                                                    ]
+                                                }
+                                            },
+                                            "availableHours": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "MORNING",
+                                                        "AFTERNOON",
+                                                        "NIGHT"
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logistic information updated successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/partner": {
+            "get": {
+                "summary": "Get a client partner",
+                "operationId": "8e1b8ca0b68707cd7b618d73b4cd6276",
+                "parameters": [
+                    {
+                        "name": "document",
+                        "in": "query",
+                        "description": "CPF or CNPJ",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "220.197.900-68"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Parnership successfully get"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Add a partner to a client",
+                "operationId": "32c66d502b96c3438d220ced02747513",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpfCnpj": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "partner": {
+                                        "properties": {
+                                            "cpf": {
+                                                "type": "string",
+                                                "example": "040.720.323-01"
+                                            },
+                                            "firstName": {
+                                                "type": "string",
+                                                "example": "João"
+                                            },
+                                            "lastName": {
+                                                "type": "string",
+                                                "example": "Alencar"
+                                            },
+                                            "birthday": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "1982-08-02"
+                                            },
+                                            "documents": {
+                                                "properties": {
+                                                    "identification": {
+                                                        "type": "string",
+                                                        "example": "base64"
+                                                    },
+                                                    "addressProof": {
+                                                        "type": "string",
+                                                        "example": "base64"
+                                                    },
+                                                    "storeFront": {
+                                                        "type": "string",
+                                                        "example": "base64"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Partner added successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        },
+        "/api/clients/responsible": {
+            "get": {
+                "summary": "Get a client responsible person",
+                "operationId": "fc5fe76cbdbc84f6ddbf89a853d493fd",
+                "parameters": [
+                    {
+                        "name": "document",
+                        "in": "query",
+                        "description": "CPF or CNPJ",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "220.197.900-68"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Responsible successfully get"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Add a responsible person to a client",
+                "operationId": "29f3946060f195cdd6d0a4e1fd6f99a7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "cpfCnpj": {
+                                        "type": "string",
+                                        "example": "220.197.900-68"
+                                    },
+                                    "responsible": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Jonh Doe"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "format": "email",
+                                                "example": "mail@gmail.com"
+                                            },
+                                            "cellphone": {
+                                                "type": "string",
+                                                "example": "(99) 99999-9999"
+                                            },
+                                            "residencialPhone": {
+                                                "type": "string",
+                                                "example": "(99) 99999-9999"
+                                            },
+                                            "comercialPhone": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "password": {
+                                                "type": "string",
+                                                "example": "123"
+                                            },
+                                            "birthday": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "1990-04-04"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Responsible person added successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Client not found"
+                    }
+                }
+            }
+        }
+    }
+}
