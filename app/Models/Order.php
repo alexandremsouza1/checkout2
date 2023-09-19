@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use App\Helpers\Token;
 
-class Order extends Model
+class Order extends BaseModel
 {
     use SoftDeletes;
     use HasFactory;

@@ -24,12 +24,21 @@ abstract class BaseModel extends Model
      */
     public function validate()
     {
-        $validator = app('validator')->make($this->toArray(), $this->rules());
+        $validator = app('validator')->make($this->toArray(), $this->getRulesFromModel());
   
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
         return true;
+    }
+
+
+    private function getRulesFromModel()
+    {
+        if (method_exists($this, 'rules')) {
+            return $this->rules();
+        }
+        return [];
     }
 
 }

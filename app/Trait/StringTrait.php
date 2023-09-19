@@ -3,6 +3,8 @@
 
 namespace App\Trait;
 
+use Illuminate\Support\Str;
+
 
 trait StringTrait
 {
@@ -20,4 +22,17 @@ trait StringTrait
     $pattern = '/^[a-zA-Z0-9\s]+$/';
     return preg_match($pattern, $string) === 1;
   }
+
+  public function convertToSnakeCase($data)
+  {
+      $result = [];
+  
+      foreach ($data as $key => $value) {
+          $snakeCaseKey = Str::snake($key);
+          $result[$snakeCaseKey] = $value;
+      }
+  
+      return $result;
+  }
+
 }

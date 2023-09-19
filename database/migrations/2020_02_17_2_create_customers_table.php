@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('email')->unique();
+            $table->string('client_id')->unique();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('email')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+            $table->string('password')->nullable();
+            $table->rememberToken()->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -6,8 +6,8 @@ class Responder
     public static function success($data = [], string $message = '')
     {
         return response()->json([
-            'success' => true,
             'data' => $data,
+            'status' => true,
             'message' => $message,
         ]);
     }
@@ -15,17 +15,17 @@ class Responder
     public static function error($data = [], string $error = '', $responseCode = 400)
     {
         return response()->json([
-            'success' => false,
-            'error' => $error,
             'data' => $data,
+            'status' => false,
+            'error' => $error,
         ], $responseCode);
     }
 
     public static function noJsonSuccess($data = [], string $message = '')
     {
         return [
-            'success' => true,
             'data' => $data,
+            'status' => true,
             'message' => $message,
         ];
     }
@@ -33,9 +33,9 @@ class Responder
     public static function noJsonError($data = [], string $error = '')
     {
         return [
-            'success' => false,
-            'error' => $error,
             'data' => $data,
+            'status' => false,
+            'error' => $error,
         ];
     }
 }

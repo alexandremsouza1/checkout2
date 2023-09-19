@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrderItem extends Model
+class OrderItem extends BaseModel
 {
     use SoftDeletes;
     use HasFactory;

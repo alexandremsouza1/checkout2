@@ -3,45 +3,49 @@
 namespace App\Models;
 
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Contracts\Product as ProductContract;
 
-class Product extends BaseModel
+class Product extends BaseModel implements ProductContract
 {
+    use HasFactory;
 
-  protected $fillable = [
-    "suggestedQuantity",
-    "stock",
-    "action",
-    "charge",
-    "code",
-    "weight",
-    "unitFactor",
-    "productName",
-    "kit",
-    "material",
-    "polarized",
-    "unitPrice",
-    "priceTable",
-    "orderType",
-    "segment",
-    "brand",
-    "category",
-    "packagingType",
-    "groupKonnect",
-    "deliveryType",
-    "flavor",
-  ];
+    protected $guarded = ['id'];
+    protected $hidden = [];
+    protected $dates = ['created_at', 'updated_at'];
+    protected $casts = [];
+    public $timestamps = true;
 
+    public function getPrice()
+    {
+        return $this->price;
+    }
 
-  protected $rules = [];
+    public function getName()
+    {
+        return $this->name;
+    }
 
+    public function getWeight()
+    {
+        return $this->weight;
+    }
 
-  public function rules()
-  {
-    return $this->rules;
-  }
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
 
-  public function getDependencies()
-  {
-    return [];
-  }
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    public function hasImage()
+    {
+    }
+
+    public function getImageUrl()
+    {
+    }
 }

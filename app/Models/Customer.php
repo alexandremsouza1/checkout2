@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Contracts\Customer as CustomerContract;
 
-class Customer extends Authenticatable implements CustomerContract
+class Customer extends BaseModel implements CustomerContract
 {
     protected $table = 'customers';
     protected $guarded = ['id'];
@@ -43,5 +41,10 @@ class Customer extends Authenticatable implements CustomerContract
     public function getEmail()
     {
         return $this->email;
+    }
+
+    public function getClientId()
+    {
+        return $this->client_id;
     }
 }

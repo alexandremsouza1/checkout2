@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 // includes
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CartItem extends Model
+class CartItem extends BaseModel
 {
     use SoftDeletes;
     use HasFactory;

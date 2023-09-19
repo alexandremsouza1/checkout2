@@ -13,7 +13,7 @@ use App\Contracts\State;
 use App\Facades\AddressSearch;
 use App\Helpers\Price;
 
-class Cart extends Model
+class Cart extends BaseModel
 {
     use SoftDeletes;
     use HasFactory;

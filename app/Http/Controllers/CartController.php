@@ -7,10 +7,24 @@ use App\Facades\Product;
 use App\Http\Requests\CartRequest;
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
+use App\Services\CustomerService;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
+
+    private $customerService;
+
+    private $productService;
+
+
+    public function __construct(CustomerService $customerService, ProductService $productService)
+    {
+        $this->customerService = $customerService;
+        $this->productService = $productService;
+    }
+
     /***************************************************************************************
      ** GET
      ***************************************************************************************/
@@ -24,8 +38,8 @@ class CartController extends Controller
      ***************************************************************************************/
     public function create(CartRequest $request)
     {
-        $customerForeignKey = 1;//Customer::getForeignKey();
-        $productForeignKey = 1;//Product::getForeignKey();
+        $customerForeignKey = $this->customerService->getOrCreateCustomer($request->customer)->getForeignKey();
+        $productForeignKey = $this->productService->getOrCreateProduct($request->item)->getForeignKey();
 
         $cart = Cart::makeOne([
             $customerForeignKey => auth()->user()->id ?? null,

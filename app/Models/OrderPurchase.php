@@ -9,7 +9,7 @@ use App\Contracts\Customer as CustomerContract;
 use Illuminate\Database\Eloquent\Model;
 use App\PaymentHandlerFactory;
 
-class OrderPurchase extends Model
+class OrderPurchase extends BaseModel
 {
     use HasFactory;
 
