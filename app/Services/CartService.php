@@ -3,28 +3,29 @@
 namespace App\Services;
 
 
-use App\Models\Product;
+use App\Repositories\CartRepository;
+
 
 class CartService extends AbstractService
 {
 
-  private $cart;
+  private $cartRepository;
   
-  public function __construct()
+  public function __construct(CartRepository $cartRepository)
   {
-    $this->cart = $cart;
+    $this->cartRepository = $cartRepository;
   }
+ 
 
-
-  public function addItem()
+  public function getOrCreateCart($customer, $add_items, $request)
   {
-  
-  }
-
-  public function getCart()
-  {
-
-    
-  }
+    $cart =$this->cartRepository->makeOne([
+      $customer->getForeignKey() => $customer->id,
+      'customer_email' => $customer->email,
+      'ip_address' => $request->ip(),
+      'add_items' => $add_items
+    ]);
+    return $cart;
+  } 
 
 }

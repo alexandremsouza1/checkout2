@@ -25,25 +25,25 @@ class CartRequest extends JsonFormRequest
     public function rules()
     {
         return [
-            // 'customer_email' => 'nullable|string|email',
-            // 'customer_notes' => 'nullable|string',
-            // 'shipping_first_name' => 'nullable|string',
-            // 'shipping_last_name' => 'nullable|string',
-            // 'shipping_address_line1' => 'nullable|string',
-            // 'shipping_address_line2' => 'nullable|string',
-            // 'shipping_address_city' => 'nullable|string',
-            // 'shipping_address_region' => 'nullable|string',
-            // 'shipping_address_zipcode' => 'nullable|string',
-            // 'shipping_address_phone' => 'nullable|string',
-            // 'billing_same' => 'boolean',
-            // 'billing_first_name' => 'nullable|string',
-            // 'billing_last_name' => 'nullable|string',
-            // 'billing_address_line1' => 'nullable|string',
-            // 'billing_address_line2' => 'nullable|string',
-            // 'billing_address_city' => 'nullable|string',
-            // 'billing_address_region' => 'nullable|string',
-            // 'billing_address_zipcode' => 'nullable|string',
-            // 'billing_address_phone' => 'nullable|string'
+            'customer_email' => 'nullable|string|email',
+            'customer_notes' => 'nullable|string',
+            'shipping_first_name' => 'nullable|string',
+            'shipping_last_name' => 'nullable|string',
+            'shipping_address_line1' => 'nullable|string',
+            'shipping_address_line2' => 'nullable|string',
+            'shipping_address_city' => 'nullable|string',
+            'shipping_address_region' => 'nullable|string',
+            'shipping_address_zipcode' => 'nullable|string',
+            'shipping_address_phone' => 'nullable|string',
+            'billing_same' => 'boolean',
+            'billing_first_name' => 'nullable|string',
+            'billing_last_name' => 'nullable|string',
+            'billing_address_line1' => 'nullable|string',
+            'billing_address_line2' => 'nullable|string',
+            'billing_address_city' => 'nullable|string',
+            'billing_address_region' => 'nullable|string',
+            'billing_address_zipcode' => 'nullable|string',
+            'billing_address_phone' => 'nullable|string'
         ];
     }
 

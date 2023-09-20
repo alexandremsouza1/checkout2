@@ -45,56 +45,6 @@ class Cart extends BaseModel
         return 'token';
     }
 
-    /***************************************************************************************
-     ** RELATIONS
-     ***************************************************************************************/
-
-    public function customer()
-    {
-        return $this->belongsTo(\App\Facades\Customer::getClassName(), \App\Facades\Customer::getForeignKey());
-    }
-
-    public function cartItems()
-    {
-        return $this->hasMany(\App\Facades\CartItem::getClassName(), \App\Facades\Cart::getForeignKey());
-    }
-
-    public function coupon()
-    {
-        return $this->belongsTo(\App\Facades\Coupon::getClassName(), \App\Facades\Coupon::getForeignKey());
-    }
-
-    public function order()
-    {
-        return $this->hasOne(\App\Facades\Order::getClassName(), \App\Facades\Cart::getForeignKey());
-    }
-
-    /***************************************************************************************
-     ** CRUD
-     ***************************************************************************************/
-
-    public static function makeOne(array $data)
-    {
-        $cart = new self;
-
-        $customerForeignKey = 'customer_id';
-
-        $cart->{$customerForeignKey} = isset($data[$customerForeignKey]) ? $data[$customerForeignKey] : null;
-        $cart->customer_email = auth()->user() ? auth()->user()->email : null;
-        $cart->items_subtotal = isset($data['items_subtotal']) ? $data['items_subtotal'] : 0;
-        $cart->total = isset($data['total']) ? $data['total'] : 0;
-        $cart->discount = isset($data['discount']) ? $data['discount'] : 0;
-        $cart->ip_address = $data['ip_address'];
-        $cart->save();
-
-        $productForeignKey = \App\Facades\Product::getForeignKey();
-        if (Arr::get($data, $productForeignKey) !== null) {
-            \App\Facades\CartItem::getClassName()::makeOne($cart, $data);
-        }
-
-        return $cart;
-    }
-
     public function updateMe(array $data)
     {
         $this->customer_notes = Arr::has($data, 'customer_notes') ? $data['customer_notes'] : $this->customer_notes;
@@ -184,12 +134,10 @@ class Cart extends BaseModel
 
     public function updateShipping(array $data)
     {
-
     }
 
     public function updateEmail(array $data)
     {
-
     }
 
     public function addOptions(array $options)
@@ -197,6 +145,31 @@ class Cart extends BaseModel
         $this->options = $options;
         $this->save();
     }
+
+    /***************************************************************************************
+     ** RELATIONS
+     ***************************************************************************************/
+
+    public function customer()
+    {
+        return $this->belongsTo(\App\Facades\Customer::getClassName(), \App\Facades\Customer::getForeignKey());
+    }
+
+    public function cartItems()
+    {
+        return $this->hasMany(\App\Facades\CartItem::getClassName(), \App\Facades\Cart::getForeignKey());
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(\App\Facades\Coupon::getClassName(), \App\Facades\Coupon::getForeignKey());
+    }
+
+    public function order()
+    {
+        return $this->hasOne(\App\Facades\Order::getClassName(), \App\Facades\Cart::getForeignKey());
+    }
+
 
     /***************************************************************************************
      ** SCOPES

@@ -7,6 +7,7 @@ use App\Facades\Product;
 use App\Http\Requests\CartRequest;
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
+use App\Services\CartService;
 use App\Services\CustomerService;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
@@ -18,11 +19,14 @@ class CartController extends Controller
 
     private $productService;
 
+    private $cartService;
 
-    public function __construct(CustomerService $customerService, ProductService $productService)
+
+    public function __construct(CustomerService $customerService, ProductService $productService, CartService $cartService)
     {
         $this->customerService = $customerService;
         $this->productService = $productService;
+        $this->cartService = $cartService;
     }
 
     /***************************************************************************************
@@ -38,14 +42,18 @@ class CartController extends Controller
      ***************************************************************************************/
     public function create(CartRequest $request)
     {
-        $customerForeignKey = $this->customerService->getOrCreateCustomer($request->customer)->getForeignKey();
-        $productForeignKey = $this->productService->getOrCreateProduct($request->item)->getForeignKey();
+        $addItems = [];
+        $customer = $this->customerService->getOrCreateCustomer($request->customer);
+        foreach ($request->items as $item) {
+            $product = $this->productService->getOrCreateProduct($item);
+            $addItems[] = [
+                'product_id' => $product->id,
+                'quantity' => $item['quantity'],
+                'price' => $product->price,
+            ];
+        }
+        $cart = $this->cartService->getOrCreateCart($customer, $addItems, $request);
 
-        $cart = Cart::makeOne([
-            $customerForeignKey => auth()->user()->id ?? null,
-            'ip_address' => $request->ip(),
-            $productForeignKey => $request->get($productForeignKey)
-        ]);
 
         return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order'])));
     }
