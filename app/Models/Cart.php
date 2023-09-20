@@ -42,7 +42,7 @@ class Cart extends BaseModel
 
     public function getRouteKeyName()
     {
-        return 'token';
+        return 'customer_id';
     }
 
     public function updateMe(array $data)
