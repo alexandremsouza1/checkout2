@@ -55,7 +55,7 @@ class CartController extends Controller
         $cart = $this->cartService->getOrCreateCart($customer, $addItems, $request);
 
 
-        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order'])));
+        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'customer','order'])));
     }
 
     /***************************************************************************************

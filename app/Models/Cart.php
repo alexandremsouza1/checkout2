@@ -152,7 +152,7 @@ class Cart extends BaseModel
 
     public function customer()
     {
-        return $this->belongsTo(\App\Facades\Customer::getClassName(), \App\Facades\Customer::getForeignKey());
+        return $this->belongsTo(\App\Facades\Customer::getClassName(), 'customer_id', 'client_id');
     }
 
     public function cartItems()
