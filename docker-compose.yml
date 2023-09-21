@@ -17,7 +17,7 @@ services:
         image: mysql:8.0
         container_name: checkout-db
         ports:
-            - "3306:3306"
+            - "3301-3399:3306"
         command: --default-authentication-plugin=mysql_native_password
         environment:
             MYSQL_DATABASE: sr_checkout
