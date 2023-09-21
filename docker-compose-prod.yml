@@ -4,7 +4,7 @@ services:
         build:
             context: .
             dockerfile: docker/prod.Dockerfile
-        container_name: checkout-api
+        container_name: mup_checkout_api
         ports:
             - "8000:8000"
         environment:
