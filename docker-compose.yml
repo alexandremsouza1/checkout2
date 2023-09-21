@@ -4,7 +4,7 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile
-        container_name: checkout-api
+        container_name: checkout_api
         ports:
             - "8001-8099:8000"
         volumes:
