@@ -20,7 +20,7 @@ class CartService extends AbstractService
   public function getOrCreateCart($customer, $add_items, $request)
   {
     $cart =$this->cartRepository->makeOne([
-      $customer->getForeignKey() => $customer->client_id,
+      'customer_client_id' => $customer->client_id,
       'customer_email' => $customer->email,
       'ip_address' => $request->ip(),
       'add_items' => $add_items

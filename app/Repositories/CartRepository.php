@@ -18,7 +18,7 @@ class CartRepository extends AbstractRepository
 
     public function makeOne(array $data)
     {
-        $customerForeignKey = 'customer_id';
+        $customerForeignKey = 'customer_client_id';
 
         $cart = $this->model->where($customerForeignKey, $data[$customerForeignKey])->first();
 

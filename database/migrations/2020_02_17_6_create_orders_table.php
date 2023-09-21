@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
 
             $table->unsignedBigInteger('cart_id')->nullable();
-            $table->unsignedBigInteger('customer_id')->nullable();
+            $table->unsignedBigInteger('customer_client_id')->nullable();
             $table->unsignedBigInteger('coupon_id')->nullable();
 
             $table->string('order_number')->nullable();
@@ -53,7 +53,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('cart_id')->references('id')->on('carts');
-            $table->foreign('customer_id')->references('id')->on('customers');
+            $table->foreign('customer_client_id')->references('id')->on('customers');
             $table->foreign('coupon_id')->references('id')->on('coupons');
         });
     }

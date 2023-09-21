@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('carts', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->string('customer_id')->nullable();
+            $table->string('customer_client_id')->nullable();
             $table->unsignedBigInteger('coupon_id')->nullable();
 
             $table->integer('items_subtotal')->default(0);
@@ -49,7 +49,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('customer_id')->references('client_id')->on('customers');
+            $table->foreign('customer_client_id')->references('client_id')->on('customers');
             $table->foreign('coupon_id')->references('id')->on('coupons');
         });
     }

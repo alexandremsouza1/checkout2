@@ -42,7 +42,7 @@ class Cart extends BaseModel
 
     public function getRouteKeyName()
     {
-        return 'customer_id';
+        return 'customer_client_id';
     }
 
     public function updateMe(array $data)
@@ -152,7 +152,7 @@ class Cart extends BaseModel
 
     public function customer()
     {
-        return $this->belongsTo(\App\Facades\Customer::getClassName(), 'customer_id', 'client_id');
+        return $this->belongsTo(\App\Facades\Customer::getClassName(), 'customer_client_id', 'client_id');
     }
 
     public function cartItems()
