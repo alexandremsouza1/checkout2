@@ -41,7 +41,7 @@ class CartResource extends JsonResource
             'billingAddressRegion' => $this->billing_address_region,
             'billingAddressZipcode' => $this->billing_address_zipcode,
             'billingAddressPhone' => $this->billing_address_phone,
-            'customerNotes' => $this->customer_notes,
+            'customer' => new CustomerResource($this->whenLoaded('customer')),
             'cartItems' => CartItemResource::collection($this->whenLoaded('cartItems')),
             'order' => new OrderResource($this->whenLoaded('order'))
         ];
