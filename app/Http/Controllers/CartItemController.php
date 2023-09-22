@@ -165,7 +165,8 @@ class CartItemController extends Controller
         }
         $cartItem = $cart->cartItems()->where('product_id', $product->id)->firstOrFail();
         $cartItem->updateMe(['quantity' => $data['item']['quantity']]);
-        $cart = $cartItem->cart;
+
+        $cart = $cart->fresh();
         $cart->load('cartItems.product');
 
         return $this->success(new CartResource($cart));
