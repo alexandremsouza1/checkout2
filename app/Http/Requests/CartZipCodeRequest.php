@@ -21,10 +21,10 @@ class CartZipCodeRequest extends JsonFormRequest
      */
     public function rules()
     {
-        $countryCode = config('checkout.geo_names.country_code');
 
         return [
-            'zipcode' => 'postal_code:' . $countryCode
+            'clientId' => 'required|string',
+            'shipping' => 'required|array',
         ];
     }
 }

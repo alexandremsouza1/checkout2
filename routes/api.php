@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\CartShippingController;
 use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
 

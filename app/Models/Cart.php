@@ -135,6 +135,8 @@ class Cart extends BaseModel
 
     public function updateShipping(array $data)
     {
+        $this->shipping = Arr::has($data, 'shipping') ? $data['shipping']['price'] : $this->shipping;
+        $this->setTotal();
     }
 
     public function updateEmail(array $data)
