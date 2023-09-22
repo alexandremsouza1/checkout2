@@ -2,6 +2,27 @@
 
 namespace App\Http\Controllers;
 
+/**
+ * @OA\Info(
+ *      version="1.0.0",
+ *      title="Checkout Microservice",
+ *      description="Checkout Microservice API Documentation",
+ *      @OA\Contact(
+ *          email="administrativo@mobiup.com.br"
+ *      ),
+ *      @OA\License(
+ *          name="MIT License",
+ *          url=""
+ *      )
+ * )
+ *
+ * @OA\Server(
+ *      url=L5_SWAGGER_CONST_HOST,
+ *      description="API Server"
+ * )
+ *
+ */
+
 use App\Helpers\Responder;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

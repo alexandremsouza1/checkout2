@@ -1,8 +1,29 @@
 <?php
 namespace App\Helpers;
 
+/**
+ * @OA\Schema(
+ *     schema="SuccessResponse",
+ *     type="object",
+ *     @OA\Property(property="data", type="object", example={"key": "value"}),
+ *     @OA\Property(property="status", type="boolean", example=true),
+ *     @OA\Property(property="message", type="string", example="Success message")
+ * )
+ */
 class Responder
 {
+    
+    /**
+     * @OA\Response(
+     *     response=200,
+     *     description="Success response",
+     *     @OA\JsonContent(ref="#/components/schemas/SuccessResponse")
+     * )
+     *
+     * @param array $data
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
     public static function success($data = [], string $message = '')
     {
         return response()->json([

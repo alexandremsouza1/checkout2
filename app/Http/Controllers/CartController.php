@@ -29,6 +29,41 @@ class CartController extends Controller
     /***************************************************************************************
      ** GET
      ***************************************************************************************/
+    /**
+     * @OA\Get(
+     *     path="/api/carts",
+     *     summary="Get cart",
+     *     tags={"Cart"},
+     *     @OA\Parameter(
+     *         name="clientId",
+     *         in="query",
+     *         required=true,
+     *         description="Client ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent( ref="#/components/schemas/SuccessResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid parameters",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Invalid parameters"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized"),
+     *         ),
+     *     ),
+     * )
+     */
     public function get(CartRequest $request)
     {
         $cart = $this->cartService->findCart($request->validated());
@@ -41,6 +76,48 @@ class CartController extends Controller
     /***************************************************************************************
      ** POST
      ***************************************************************************************/
+    /**
+     * @OA\Post(
+     *     path="/api/carts",
+     *     summary="Create cart",
+     *     tags={"Cart"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="clientId", type="string", example="0060033994"),
+     *             @OA\Property(
+     *                 property="items",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="code", type="integer", example=10254),
+     *                     @OA\Property(property="weight", type="integer", example=100),
+     *                     @OA\Property(property="name", type="string", example="item1"),
+     *                     @OA\Property(property="price", type="integer", example=100),
+     *                     @OA\Property(property="quantity", type="integer", example=2),
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Cart created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Cart created successfully"),
+     *             @OA\Property(property="data", type="object", example={"cartId": 1}),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Bad Request"),
+     *         ),
+     *     ),
+     * )
+     */
     public function create(CartRequest $request)
     {
         $addItems = [];
@@ -75,6 +152,40 @@ class CartController extends Controller
     /***************************************************************************************
      ** DELETE
      ***************************************************************************************/
+    /**
+     * @OA\Delete(
+     *     path="/api/carts",
+     *     summary="Delete cart",
+     *     tags={"Cart"},
+     *     @OA\Parameter(
+     *         name="clientId",
+     *         in="query",
+     *         required=true,
+     *         description="Client ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Cart deleted successfully",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Bad Request"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized"),
+     *         ),
+     *     ),
+     * )
+     */
     public function delete(CartRequest $request)
     {
         $cart = $this->cartService->findCart($request->validated());

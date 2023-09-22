@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/carts', [CartController::class, 'get']);
 Route::post('/carts', [CartController::class, 'create']); //carts.create'
-Route::put('/carts', [CartController::class, 'update']); //carts.update'
+// Route::put('/carts', [CartController::class, 'update']); //carts.update'
 Route::delete('/carts', [CartController::class, 'delete']); //carts.delete'
 
 Route::put('/carts/zipcode', [CartZipCodeController::class, 'update']); //carts.zipcode.update'

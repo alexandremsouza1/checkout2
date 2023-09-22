@@ -28,6 +28,60 @@ class CartItemController extends Controller
     /***************************************************************************************
      ** POST
      ***************************************************************************************/
+    /**
+     * @OA\Post(
+     *     path="/api/carts/cart-items/{code}",
+     *     summary="Create cart item",
+     *     tags={"Cart Item"},
+     *     @OA\Parameter(
+     *         name="code",
+     *         in="path",
+     *         required=true,
+     *         description="Item code",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="clientId", type="string", example="0060033994"),
+     *             @OA\Property(
+     *                 property="item",
+     *                 type="object",
+     *                 @OA\Property(property="code", type="integer", example=10255),
+     *                 @OA\Property(property="weight", type="integer", example=100),
+     *                 @OA\Property(property="name", type="string", example="item1"),
+     *                 @OA\Property(property="price", type="integer", example=100),
+     *                 @OA\Property(property="quantity", type="integer", example=2),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Cart item created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Cart item created successfully"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Bad Request"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized"),
+     *         ),
+     *     ),
+     * )
+     */
     public function create(CartItemRequest $request)
     {
         $data = $request->validated();
@@ -48,6 +102,56 @@ class CartItemController extends Controller
     /***************************************************************************************
      ** PUT
      ***************************************************************************************/
+    /**
+     * @OA\Put(
+     *     path="/api/carts/cart-items/{code}",
+     *     summary="Update cart item quantity",
+     *     tags={"Cart Item"},
+     *     @OA\Parameter(
+     *         name="code",
+     *         in="path",
+     *         required=true,
+     *         description="Item code",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="clientId", type="string", example="0060033994"),
+     *             @OA\Property(
+     *                 property="item",
+     *                 type="object",
+     *                 @OA\Property(property="quantity", type="integer", example=5),
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Cart item quantity updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Cart item quantity updated successfully"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Bad Request"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized"),
+     *         ),
+     *     ),
+     * )
+     */
     public function update($cartItemCode, CartItemRequest $request)
     {
         $data = $request->validated();
@@ -70,6 +174,50 @@ class CartItemController extends Controller
     /***************************************************************************************
      ** DELETE
      ***************************************************************************************/
+    /**
+     * @OA\Delete(
+     *     path="/api/carts/cart-items/{code}",
+     *     summary="Delete cart item",
+     *     tags={"Cart Item"},
+     *     @OA\Parameter(
+     *         name="code",
+     *         in="path",
+     *         required=true,
+     *         description="Item code",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="clientId", type="string", example="0060033994"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Cart item deleted successfully",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Bad Request"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized"),
+     *         ),
+     *     ),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     */
     public function delete($cartItemCode, CartItemRequest $request)
     {
         $data = $request->validated();

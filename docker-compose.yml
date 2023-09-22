@@ -15,7 +15,7 @@ services:
             - mup_network
     db:
         image: mysql:8.0
-        container_name: checkout-db
+        container_name: checkout_db
         ports:
             - "3301-3399:3306"
         command: --default-authentication-plugin=mysql_native_password
@@ -33,6 +33,24 @@ services:
         security_opt:
             - seccomp:unconfined
         restart: always
+    supervisor:
+        container_name: checkout_supervisor
+        build:
+            context: ./
+            dockerfile: docker/supervisor/Dockerfile.supervisor
+        volumes:
+            - .:/var/www/html
+        restart: unless-stopped
+        environment:
+            - APP_ROOT=/var/www/html
+            - QUEUE_DRIVER=${QUEUE_CONNECTION}
+            - OPTIONS=${QUEUE_OPTIONS}
+            - NUM_PROCS=${NUM_PROCS}
+        networks:
+            - mup_network
+        depends_on:
+            - app
+            - db
 volumes:
     microservice-persistent:
 networks:
