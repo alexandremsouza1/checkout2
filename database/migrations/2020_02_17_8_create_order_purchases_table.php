@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('order_id')->nullable();
 
-            $table->unsignedBigInteger('customer_client_id')->nullable();
+            $table->unsignedBigInteger('client_id')->nullable();
             $table->text('order_data');
             $table->string('email');
             $table->integer('amount');
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreign('order_id')->references('id')->on('orders');
-            $table->foreign('customer_client_id')->references('id')->on('customers');
+            $table->foreign('client_id')->references('id')->on('customers');
         });
     }
 

@@ -2,21 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\CartItemRequest;
+use App\Http\Requests\CartItemRequest;
 use App\Http\Resources\CartItemResource;
 use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Services\CartService;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class CartItemController extends Controller
 {
+
+    
+    private $productService;
+
+    private $cartService;
+
+
+    public function __construct(ProductService $productService, CartService $cartService)
+    {
+        $this->productService = $productService;
+        $this->cartService = $cartService;
+    }
     /***************************************************************************************
      ** POST
      ***************************************************************************************/
-    public function create(CartItemRequest $request, Cart $cart)
+    public function create(CartItemRequest $request)
     {
-        CartItem::makeOne($cart, $request->validated());
+        $data = $request->validated();
+        $cart = $this->cartService->findCart($data);
+        if(!$cart) {
+            return $this->error([],'Esse usuário não possui carrinho ativo.');
+        }
+        $product = $this->productService->getOrCreateProduct($data['clientId'],$data['item']);
+        $data['product_id'] = $product->id;
+        CartItem::makeOne($cart, $data);
 
         $cart = $cart->fresh();
         $cart->load('cartItems.product');
@@ -27,9 +48,19 @@ class CartItemController extends Controller
     /***************************************************************************************
      ** PUT
      ***************************************************************************************/
-    public function update(CartItem $cartItem, CartItemRequest $request)
+    public function update($cartItemCode, CartItemRequest $request)
     {
-        $cartItem->updateMe($request->validated());
+        $data = $request->validated();
+        $cart = $this->cartService->findCart($data);
+        if(!$cart) {
+            return $this->error([],'Esse usuário não possui carrinho ativo.');
+        }
+        $product = $this->productService->findProductByCode($cartItemCode);
+        if(!$product) {
+            return $this->error([],'Produto não encontrado.');
+        }
+        $cartItem = $cart->cartItems()->where('product_id', $product->id)->firstOrFail();
+        $cartItem->updateMe(['quantity' => $data['item']['quantity']]);
         $cart = $cartItem->cart;
         $cart->load('cartItems.product');
 
@@ -39,8 +70,18 @@ class CartItemController extends Controller
     /***************************************************************************************
      ** DELETE
      ***************************************************************************************/
-    public function delete(CartItem $cartItem)
+    public function delete($cartItemCode, CartItemRequest $request)
     {
+        $data = $request->validated();
+        $cart = $this->cartService->findCart($data);
+        if(!$cart) {
+            return $this->error([],'Esse usuário não possui carrinho ativo.');
+        }
+        $product = $this->productService->findProductByCode($cartItemCode);
+        if(!$product) {
+            return $this->error([],'Produto não encontrado.');
+        }
+        $cartItem = $cart->cartItems()->where('product_id', $product->id)->firstOrFail();
         $cartItem->delete();
 
         return $this->success();

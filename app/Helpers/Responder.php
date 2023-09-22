@@ -17,7 +17,7 @@ class Responder
         return response()->json([
             'data' => $data,
             'status' => false,
-            'error' => $error,
+            'message' => $error,
         ], $responseCode);
     }
 
@@ -35,7 +35,7 @@ class Responder
         return [
             'data' => $data,
             'status' => false,
-            'error' => $error,
+            'message' => $error,
         ];
     }
 }

@@ -42,11 +42,12 @@ class Cart extends BaseModel
 
     public function getRouteKeyName()
     {
-        return 'customer_client_id';
+        return 'clientId';
     }
 
     public function updateMe(array $data)
     {
+        $this->client_id = Arr::has($data, 'client_id') ? $data['client_id'] : $this->client_id;
         $this->customer_notes = Arr::has($data, 'customer_notes') ? $data['customer_notes'] : $this->customer_notes;
         $this->customer_email = Arr::has($data, 'customer_email') ? $data['customer_email'] : $this->customer_email;
         $this->shipping_first_name = Arr::has($data, 'shipping_first_name') ? $data['shipping_first_name'] : $this->shipping_first_name;
@@ -150,10 +151,10 @@ class Cart extends BaseModel
      ** RELATIONS
      ***************************************************************************************/
 
-    public function customer()
-    {
-        return $this->belongsTo(\App\Facades\Customer::getClassName(), 'customer_client_id', 'client_id');
-    }
+    // public function customer()
+    // {
+    //     return $this->belongsTo(\App\Facades\Customer::getClassName(), 'client_id', 'client_id');
+    // }
 
     public function cartItems()
     {

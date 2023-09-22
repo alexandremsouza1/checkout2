@@ -2,12 +2,14 @@
 
 namespace App\Services;
 
-
+use App\Models\Cart;
 use App\Repositories\CartRepository;
-
+use App\Trait\StringTrait;
 
 class CartService extends AbstractService
 {
+
+  use StringTrait;
 
   private $cartRepository;
   
@@ -17,15 +19,17 @@ class CartService extends AbstractService
   }
  
 
-  public function getOrCreateCart($customer, $add_items, $request)
+  public function getOrCreateCart($data)
   {
-    $cart =$this->cartRepository->makeOne([
-      'customer_client_id' => $customer->client_id,
-      'customer_email' => $customer->email,
-      'ip_address' => $request->ip(),
-      'add_items' => $add_items
-    ]);
+    $data = $this->convertToSnakeCase($data);
+    $cart = $this->cartRepository->makeOne($data);
     return $cart;
-  } 
+  }
+  
+  public function findCart($data) : Cart | bool
+  {
+    $cart = $this->cartRepository->findByKey('client_id', $data['clientId']);
+    return $cart;
+  }
 
 }

@@ -48,4 +48,9 @@ class Product extends BaseModel implements ProductContract
     public function getImageUrl()
     {
     }
+
+    public function findByCode($code)
+    {
+        return $this->where('code', $code)->first();
+    }
 }

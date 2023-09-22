@@ -18,7 +18,7 @@ class CartRepository extends AbstractRepository
 
     public function makeOne(array $data)
     {
-        $customerForeignKey = 'customer_client_id';
+        $customerForeignKey = 'client_id';
 
         $cart = $this->model->where($customerForeignKey, $data[$customerForeignKey])->first();
 
@@ -33,9 +33,10 @@ class CartRepository extends AbstractRepository
         $cart->discount = isset($data['discount']) ? $data['discount'] : 0;
         $cart->ip_address = $data['ip_address'];
         $cart->save();
-
-        foreach ($data['add_items'] as $item) {
-            \App\Facades\CartItem::getClassName()::makeOne($cart, $item);
+        if(!empty($data['items'])) {
+            foreach ($data['items'] as $item) {
+                \App\Facades\CartItem::getClassName()::makeOne($cart, $item);
+            }
         }
 
         return $cart;

@@ -25,25 +25,9 @@ class CartRequest extends JsonFormRequest
     public function rules()
     {
         return [
-            'customer_email' => 'nullable|string|email',
-            'customer_notes' => 'nullable|string',
-            'shipping_first_name' => 'nullable|string',
-            'shipping_last_name' => 'nullable|string',
-            'shipping_address_line1' => 'nullable|string',
-            'shipping_address_line2' => 'nullable|string',
-            'shipping_address_city' => 'nullable|string',
-            'shipping_address_region' => 'nullable|string',
-            'shipping_address_zipcode' => 'nullable|string',
-            'shipping_address_phone' => 'nullable|string',
-            'billing_same' => 'boolean',
-            'billing_first_name' => 'nullable|string',
-            'billing_last_name' => 'nullable|string',
-            'billing_address_line1' => 'nullable|string',
-            'billing_address_line2' => 'nullable|string',
-            'billing_address_city' => 'nullable|string',
-            'billing_address_region' => 'nullable|string',
-            'billing_address_zipcode' => 'nullable|string',
-            'billing_address_phone' => 'nullable|string'
+            'clientId' => 'required|string',
+            'items' => 'nullable|array',
+            'ip_address' => 'nullable|string',
         ];
     }
 
@@ -57,6 +41,7 @@ class CartRequest extends JsonFormRequest
     public function addRequestChecks()
     {
         $data = $this->all();
+        $data['ip_address'] = $this->ip();
         $data['is_post'] = $this->isPost();
         $data['is_update'] = $this->isPut();
         $data['is_editing'] = $this->isPost() || $this->isPut();

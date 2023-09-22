@@ -26,7 +26,9 @@ trait StringTrait
   public function convertToSnakeCase($data)
   {
       $result = [];
-  
+      if(!is_array($data)) {
+          return $result;
+      }
       foreach ($data as $key => $value) {
           $snakeCaseKey = Str::snake($key);
           $result[$snakeCaseKey] = $value;

@@ -23,13 +23,9 @@ class CartItemRequest extends JsonFormRequest
      */
     public function rules()
     {
-        $productTableName = Product::getTableName();
-        $productForeignKey = Product::getForeignKey();
-
         return [
-            $productForeignKey => "required_if:is_post,true|integer|exists:${productTableName},id",
-            'quantity' => 'integer|gte:0',
-            'customer_note' => 'nullable|string'
+            'clientId' => 'required|string',
+            'item' => 'array',
         ];
     }
 

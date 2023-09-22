@@ -15,16 +15,13 @@ use Illuminate\Http\Request;
 class CartController extends Controller
 {
 
-    private $customerService;
-
     private $productService;
 
     private $cartService;
 
 
-    public function __construct(CustomerService $customerService, ProductService $productService, CartService $cartService)
+    public function __construct(ProductService $productService, CartService $cartService)
     {
-        $this->customerService = $customerService;
         $this->productService = $productService;
         $this->cartService = $cartService;
     }
@@ -32,9 +29,13 @@ class CartController extends Controller
     /***************************************************************************************
      ** GET
      ***************************************************************************************/
-    public function get(Cart $cart)
+    public function get(CartRequest $request)
     {
-        return $this->success(new CartResource($cart->load(['cartItems.product', 'customer','order'])));
+        $cart = $this->cartService->findCart($request->validated());
+        if(!$cart) {
+            return $this->error([],'Esse usuário não possui carrinho ativo.');
+        }
+        return $this->success(new CartResource($cart->load(['cartItems.product', 'order'])));
     }
 
     /***************************************************************************************
@@ -43,19 +44,22 @@ class CartController extends Controller
     public function create(CartRequest $request)
     {
         $addItems = [];
-        $customer = $this->customerService->getOrCreateCustomer($request->customer);
-        foreach ($request->items as $item) {
-            $product = $this->productService->getOrCreateProduct($item);
-            $addItems[] = [
-                'product_id' => $product->id,
-                'quantity' => $item['quantity'],
-                'price' => $product->price,
-            ];
+        $data = $request->validated();
+        if(isset($data['items'])) {
+            foreach ($data['items'] as $item) {
+                $product = $this->productService->getOrCreateProduct($data['clientId'],$item);
+                $addItems[] = [
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $product->price,
+                ];
+            }
         }
-        $cart = $this->cartService->getOrCreateCart($customer, $addItems, $request);
+        $data['items'] = $addItems;
+        $cart = $this->cartService->getOrCreateCart($data);
 
 
-        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'customer','order'])));
+        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order'])));
     }
 
     /***************************************************************************************
@@ -71,10 +75,14 @@ class CartController extends Controller
     /***************************************************************************************
      ** DELETE
      ***************************************************************************************/
-    public function delete(Cart $cart)
+    public function delete(CartRequest $request)
     {
+        $cart = $this->cartService->findCart($request->validated());
+        if(!$cart) {
+            return $this->error([],'Esse usuário não possui carrinho ativo.');
+        }
         $cart->delete();
 
-        return $this->success();
+        return $this->success([], 'Carrinho removido com sucesso.');
     }
 }

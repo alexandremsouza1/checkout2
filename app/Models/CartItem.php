@@ -52,7 +52,7 @@ class CartItem extends BaseModel
 
     public function getRouteKeyName()
     {
-        return 'token';
+        return 'clientId';
     }
 
     /***************************************************************************************

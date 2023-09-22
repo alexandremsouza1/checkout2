@@ -61,10 +61,10 @@ class Order extends BaseModel
         return $this->hasMany(\App\Facades\OrderItem::getClassName(), \App\Facades\Order::getForeignKey());
     }
 
-    public function customer()
-    {
-        return $this->belongsTo(\App\Facades\Customer::getClassName(), \App\Facades\Customer::getForeignKey());
-    }
+    // public function customer()
+    // {
+    //     return $this->belongsTo(\App\Facades\Customer::getClassName(), \App\Facades\Customer::getForeignKey());
+    // }
 
     public function orderPurchase()
     {
