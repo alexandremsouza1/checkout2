@@ -17,10 +17,10 @@ class CartItemResource extends JsonResource
         $productResource = config('checkout.product_resource');
 
         return [
-            'cart_item_token' => $this->token,
+            'cartItemToken' => $this->token,
             'price' => displayMoney($this->price),
             'quantity' => $this->quantity,
-            'customer_note' => $this->customer_note,
+            'customerNote' => $this->customer_note,
             'product' => new $productResource($this->whenLoaded('product'))
         ];
     }
