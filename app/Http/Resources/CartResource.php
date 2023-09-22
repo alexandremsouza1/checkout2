@@ -16,11 +16,11 @@ class CartResource extends JsonResource
     {
         return [
             'cartToken' => $this->token,
-            'itemsSubtotal' => $this->items_subtotal ? displayMoney($this->items_subtotal) : null,
+            'subtotal' => $this->items_subtotal ?? null,
             'taxRate' => $this->tax_rate ? displayTaxRate($this->tax_rate) : null,
             'tax' => $this->tax ? displayMoney($this->tax) : null,
-            'total' => $this->total ? displayMoney($this->total) : null,
-            'totalCents' => $this->total,
+            //'total' => $this->total ? displayMoney($this->total) : null,
+            'total' => $this->total,
             'discount' => $this->discount ? displayMoney($this->discount) : null,
             'shipping' => $this->shipping ? displayMoney($this->shipping) : null,
             'cartItems' => CartItemResource::collection($this->whenLoaded('cartItems')),

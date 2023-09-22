@@ -18,7 +18,7 @@ class CartItemResource extends JsonResource
 
         return [
             'cartItemToken' => $this->token,
-            'price' => displayMoney($this->price),
+            'price' => $this->price,
             'quantity' => $this->quantity,
             'customerNote' => $this->customer_note,
             'product' => new $productResource($this->whenLoaded('product'))

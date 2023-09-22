@@ -17,7 +17,7 @@ class ProductResource extends JsonResource
        return [
             'name' => $this->getName(),
             'image' => $this->getImageUrl(),
-            'price' => displayMoney($this->getPrice())
+            'price' => $this->getPrice()
        ];
     }
 }

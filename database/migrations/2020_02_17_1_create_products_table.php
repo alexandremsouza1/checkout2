@@ -16,8 +16,15 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('code');
-            $table->decimal('price', 10, 2);
+            $table->integer('price');
             $table->string('name');
+            $table->string('capacity_label')->nullable();
+            $table->string('quantity_per_package')->nullable();
+            $table->integer('original_price')->nullable();
+            $table->integer('unit_price')->nullable();
+            $table->integer('points')->nullable();
+            $table->string('image')->nullable();
+            $table->integer('quantity')->nullable();
             $table->integer('suggested_quantity')->nullable();
             $table->integer('stock')->default(0);
             $table->boolean('action')->default(false);
