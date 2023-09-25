@@ -38,4 +38,10 @@ class CartService extends AbstractService
     return $cart;
   }
 
+  public function clearCart($clentId)
+  {
+    $cart = $this->findCartByClientId($clentId);
+    return $cart->cartItems()->delete();
+  }
+
 }

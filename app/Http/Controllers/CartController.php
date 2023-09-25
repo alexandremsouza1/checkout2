@@ -133,8 +133,12 @@ class CartController extends Controller
                     'price' => $product->price,
                 ];
             }
+            $data['items'] = $addItems;
         }
-        $data['items'] = $addItems;
+        if(empty($data['items'])) {
+            $this->cartService->clearCart($data['clientId']);
+        }
+
         $cart = $this->cartService->getOrCreateCart($data);
         UpdateCartJob::dispatch($cart->client_id);
 
