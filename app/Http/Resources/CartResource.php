@@ -10,9 +10,9 @@ class CartResource extends JsonResource
         'A' => 'bankSlip',
         'N' => 'pix',
         'X' => 'credit',
-        'Y' => 'debit',
-        'I' => 'financing',
-        'Z' => 'non_authenticated_debit'
+        'Y' => 'debit'
+        // 'I' => 'financing',
+        // 'Z' => 'non_authenticated_debit'
       ];
 
     /**
@@ -44,8 +44,10 @@ class CartResource extends JsonResource
     {
       $resources = [];
       foreach ($conditions as $condition) {
-        $condicaoPagamento = isset(self::PAYMENT_METHODS[$condition['payment_method']]) ? self::PAYMENT_METHODS[$condition['payment_method']] : 'other';
-  
+        if(!isset(self::PAYMENT_METHODS[$condition['payment_method']])){
+          continue;
+        }
+        $condicaoPagamento = self::PAYMENT_METHODS[$condition['payment_method']];
         if (!isset($resources[$condicaoPagamento])) {
           $resources[$condicaoPagamento] = [];
         }
