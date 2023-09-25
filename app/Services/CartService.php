@@ -2,29 +2,40 @@
 
 namespace App\Services;
 
-
-use App\Models\Product;
+use App\Models\Cart;
+use App\Repositories\CartRepository;
+use App\Trait\StringTrait;
 
 class CartService extends AbstractService
 {
 
-  private $cart;
+  use StringTrait;
+
+  private $cartRepository;
   
-  public function __construct()
+  public function __construct(CartRepository $cartRepository)
   {
-    $this->cart = $cart;
+    $this->cartRepository = $cartRepository;
+  }
+ 
+
+  public function getOrCreateCart($data)
+  {
+    $data = $this->convertToSnakeCase($data);
+    $cart = $this->cartRepository->makeOne($data);
+    return $cart;
+  }
+  
+  public function findCart($data) : Cart | bool
+  {
+    $cart = $this->cartRepository->findByKey('client_id', $data['clientId']);
+    return $cart;
   }
 
-
-  public function addItem()
+  public function findCartByClientId($clientId) : Cart | bool
   {
-  
-  }
-
-  public function getCart()
-  {
-
-    
+    $cart = $this->cartRepository->findByKey('client_id', $clientId);
+    return $cart;
   }
 
 }

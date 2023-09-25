@@ -2,11 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Trait\StringTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class AbstractRepository implements IEntityRepository
 {
+    use StringTrait;
     /**
      * @var Model
      */
@@ -47,6 +49,7 @@ abstract class AbstractRepository implements IEntityRepository
 
     public function store($data,$key = 'id')
     {
+        $data = $this->convertToSnakeCase($data);
         $id = isset($data[$key]) ? $data[$key] : null;
         $this->model->fill($data);
         if($this->model->validate($data)) {
@@ -62,6 +65,7 @@ abstract class AbstractRepository implements IEntityRepository
     public function update($id, $data)
     {
         $data['updated_at'] = Carbon::now();
+        $data = $this->convertToSnakeCase($data);
         $this->model->fill($data);
         if($this->model->validate($data)) {
             if(!$this->model->where('id', $id)->update($data)) {
@@ -75,4 +79,6 @@ abstract class AbstractRepository implements IEntityRepository
     {
         return $this->model->where('id', $id)->delete();
     }
+
+
 }

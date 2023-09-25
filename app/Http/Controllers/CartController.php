@@ -2,76 +2,200 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Facades\Customer;
+use App\Facades\Product;
+use App\Http\Requests\CartRequest;
+use App\Http\Resources\CartResource;
+use App\Jobs\UpdateCartJob;
+use App\Models\Cart;
 use App\Services\CartService;
+use App\Services\CustomerService;
+use App\Services\ProductService;
+use Illuminate\Http\Request;
 
-
-class CartController extends DefaultApiController
+class CartController extends Controller
 {
 
+    private $productService;
 
-  protected $service;
-
-
-  public function __construct(CartService $service)
-  {
-      $this->service = $service;
-  }
-
-  public function index($user)
-  {
-    $cart = $this->service->getCart('default');
-    $statusCode = 200;
-    $messageText = 'Carrinho retornado com sucesso';
-    return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);
-  }
-
-  public function add(Request $request, $user)
-  {
-    $data = $request->all();
-    $cart = $this->service->addItem('default',$data);
-    $statusCode = 200;
-    $messageText = 'Item adicionado ao carrinho com sucesso';
-    return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);
-  }
+    private $cartService;
 
 
-  public function update(Request $request)
-  {
-    $params = $request->all();
-    $cart = $this->service->updateCart($params);
-    $statusCode = 200;
-    $messageText = 'Carrinho atualizado com sucesso';
-    return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);
-  }
+    public function __construct(ProductService $productService, CartService $cartService)
+    {
+        $this->productService = $productService;
+        $this->cartService = $cartService;
+    }
 
-  public function updateItem(Request $request, $item, $attribute, $value)
-  {
-    $user = $request->input('user');
-    $cart = $this->service->updateItem($user, $item, $attribute, $value);
-    $statusCode = 200;
-    $messageText = 'Item atualizado com sucesso';
-    return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);
-  }
+    /***************************************************************************************
+     ** GET
+     ***************************************************************************************/
+    /**
+     * @OA\Get(
+     *     path="/api/carts",
+     *     summary="Get cart",
+     *     tags={"Cart"},
+     *     @OA\Parameter(
+     *         name="clientId",
+     *         in="query",
+     *         required=true,
+     *         description="Client ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success",
+     *         @OA\JsonContent( ref="#/components/schemas/SuccessResponse")
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid parameters",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Invalid parameters"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized"),
+     *         ),
+     *     ),
+     * )
+     */
+    public function get(CartRequest $request)
+    {
+        $cart = $this->cartService->findCart($request->validated());
+        if(!$cart) {
+            return $this->error([],'Esse usuário não possui carrinho ativo.');
+        }
+        UpdateCartJob::dispatch($cart->client_id);
+        return $this->success(new CartResource($cart->load(['cartItems.product', 'order', 'paymentMethods'])));
+    }
 
+    /***************************************************************************************
+     ** POST
+     ***************************************************************************************/
+    /**
+     * @OA\Post(
+     *     path="/api/carts",
+     *     summary="Create cart",
+     *     tags={"Cart"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="clientId", type="string", example="0060033994"),
+     *             @OA\Property(
+     *                 property="items",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="code", type="integer", example=10254),
+     *                     @OA\Property(property="weight", type="integer", example=100),
+     *                     @OA\Property(property="name", type="string", example="item1"),
+     *                     @OA\Property(property="price", type="integer", example=100),
+     *                     @OA\Property(property="quantity", type="integer", example=2),
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Cart created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Cart created successfully"),
+     *             @OA\Property(property="data", type="object", example={"cartId": 1}),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Bad Request"),
+     *         ),
+     *     ),
+     * )
+     */
+    public function create(CartRequest $request)
+    {
+        $addItems = [];
+        $data = $request->validated();
+        if(isset($data['items'])) {
+            foreach ($data['items'] as $item) {
+                $product = $this->productService->getOrCreateProduct($data['clientId'],$item);
+                $addItems[] = [
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $product->price,
+                ];
+            }
+        }
+        $data['items'] = $addItems;
+        $cart = $this->cartService->getOrCreateCart($data);
+        UpdateCartJob::dispatch($cart->client_id);
 
-  public function updateShipping(Request $request, $shipping)
-  {
-    $user = $request->input('user');
-    $cart = $this->service->updateShipping($user, $shipping);
-    $statusCode = 200;
-    $messageText = 'Frete atualizado com sucesso';
-    return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);
-  }
+        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order'])));
+    }
 
-  public function remove(Request $request, $item)
-  {
-    $user = $request->input('user');
-    $cart = $this->service->removeItem($user, $item);
-    $statusCode = 200;
-    $messageText = 'Item removido com sucesso';
-    return response()->json(['data' => $cart, 'message' => $messageText, 'status' => true], $statusCode);
-  }
+    /***************************************************************************************
+     ** PUT
+     ***************************************************************************************/
+    public function update(Cart $cart, CartRequest $request)
+    {
+        $cart->updateMe($request->validated());
+        UpdateCartJob::dispatch($cart->client_id);
+        return $this->success(new CartResource($cart->load(['cartItems.product', 'order'])));
+    }
 
+    /***************************************************************************************
+     ** DELETE
+     ***************************************************************************************/
+    /**
+     * @OA\Delete(
+     *     path="/api/carts",
+     *     summary="Delete cart",
+     *     tags={"Cart"},
+     *     @OA\Parameter(
+     *         name="clientId",
+     *         in="query",
+     *         required=true,
+     *         description="Client ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="Cart deleted successfully",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad Request",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Bad Request"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Unauthorized"),
+     *         ),
+     *     ),
+     * )
+     */
+    public function delete(CartRequest $request)
+    {
+        $cart = $this->cartService->findCart($request->validated());
+        if(!$cart) {
+            return $this->error([],'Esse usuário não possui carrinho ativo.');
+        }
+        $cart->delete();
 
+        return $this->success([], 'Carrinho removido com sucesso.');
+    }
 }
