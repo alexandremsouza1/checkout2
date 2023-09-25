@@ -6,6 +6,7 @@ use App\Facades\Customer;
 use App\Facades\Product;
 use App\Http\Requests\CartRequest;
 use App\Http\Resources\CartResource;
+use App\Jobs\CreateCartJob;
 use App\Models\Cart;
 use App\Services\CartService;
 use App\Services\CustomerService;
@@ -134,7 +135,7 @@ class CartController extends Controller
         }
         $data['items'] = $addItems;
         $cart = $this->cartService->getOrCreateCart($data);
-
+        CreateCartJob::dispatch($cart->client_id);
 
         return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order'])));
     }

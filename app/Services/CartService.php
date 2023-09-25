@@ -32,4 +32,10 @@ class CartService extends AbstractService
     return $cart;
   }
 
+  public function findCartByClientId($clientId) : Cart | bool
+  {
+    $cart = $this->cartRepository->findByKey('client_id', $clientId);
+    return $cart;
+  }
+
 }

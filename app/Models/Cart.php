@@ -173,6 +173,11 @@ class Cart extends BaseModel
         return $this->hasOne(\App\Facades\Order::getClassName(), \App\Facades\Cart::getForeignKey());
     }
 
+    public function payment()
+    {
+        return $this->hasMany(Payment::class, \App\Facades\Cart::getForeignKey());
+    }
+
 
     /***************************************************************************************
      ** SCOPES
