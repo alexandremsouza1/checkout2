@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\Price;
 use App\Models\Cart;
 use App\Services\CartService;
 use App\Services\PaymentService;
@@ -43,31 +44,45 @@ class UpdateCartJob implements ShouldQueue
         if(!$this->cart->paymentMethods()->count()){
             $paymentService->create($this->cart);
         }
-        $paymentDefault = $this->getPaymentMethodDefault($this->cart);
+        $paymentSelected = $this->getSelectedPaymentMethods($this->cart);
 
         $items = $this->cart->cartItems()->get();
         foreach ($items as $item){
             $new_price = $item->product->price * $item->quantity;
-            $item->price = $new_price * (1 + ($paymentDefault->fee / 100));
+            $item->price = Price::setValueWithFee($new_price, $paymentSelected->fee);
             $item->save();
         }
  
-        $paymentDefault->total_amount = $this->cart->total;
-        $paymentDefault->partial_amount = $paymentDefault->installments ? ($this->cart->total / $paymentDefault->installments) : $this->cart->total;
-        $paymentDefault->save();
-
         $this->cart->fresh();
     }
 
-    private function getPaymentMethodDefault($cart)
+    private function getSelectedPaymentMethods($cart)
     {
-        $paymentDefault = $cart->paymentMethods()->where('default',true)->first();
-        if(!$paymentDefault){
-            $paymentDefault = $cart->paymentMethods()->first();
-            $paymentDefault->default = true;
-            $paymentDefault->save();
+        $default = null;
+        $active = null;
+        $payments = $cart->paymentMethods()->get();
+        foreach ($payments as $payment){
+            $payment->total_amount = $this->cart->total;
+            $value_per_installment = $payment->installments ? $this->cart->total / $payment->installments : $this->cart->total;
+            $payment->partial_amount = Price::setValueWithFee($value_per_installment, $payment->fee);
+            if($payment->active) {
+                $active = $payment;
+            }
+            if($payment->default) {
+                $default = $payment;
+            }
+            $payment->save();
         }
-        return $paymentDefault;
+
+        if($active){
+            return $active;
+        }
+        if($default){
+            return $default;
+        }
+        $selected = $payments->first();
+        $selected->active = true;
+        return $selected->save();
     }
 
 }

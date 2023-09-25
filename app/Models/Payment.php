@@ -21,6 +21,7 @@ class Payment extends BaseModel
     'installments' => 'integer',
     'days' => 'integer',
     'number' => 'integer',
+    'active' => 'boolean',
   ];
   public $timestamps = true;
 
@@ -45,6 +46,7 @@ class Payment extends BaseModel
     'type',
     'partial_amount',
     'total_amount',
+    'active'
   ];
 
   public function cart()

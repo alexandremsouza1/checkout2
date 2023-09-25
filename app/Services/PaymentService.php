@@ -46,7 +46,6 @@ class PaymentService extends AbstractService
         $this->paymentRepository->store([
           'hash' => $hash,
           'cart_id' => $cart->id,
-          'name' => $key,
           'billing_app' => $condition['CobrancaAPP'],
           'code' => $condition['Codigo'],
           'client_id' => $clientId,
@@ -61,7 +60,8 @@ class PaymentService extends AbstractService
           'default' => $condition['Padrao'],
           'days' => $condition['QtdDias'],
           'installments' => $condition['QtdeParcelas'],
-          'type' => $condition['Type']
+          'type' => $condition['Type'],
+          'active' => false
         ], 'hash');
       }
     }

@@ -36,6 +36,7 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->integer('total_amount')->nullable();
             $table->integer('partial_amount')->nullable();
+            $table->boolean('active')->default(false);
             $table->timestamps();
 
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');

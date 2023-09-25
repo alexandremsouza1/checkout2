@@ -32,6 +32,7 @@ class PaymentConditionsItemResource extends JsonResource
           'type' => $this->type,
           'partialAmount' => $this->partial_amount,
           'totalAmount' => $this->total_amount,
+          'active' => $this->active,
         ];
     }
 }
