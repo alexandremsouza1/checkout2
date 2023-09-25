@@ -94,10 +94,8 @@ class CartItemController extends Controller
         $data['product_id'] = $product->id;
         CartItem::makeOne($cart, $data);
         UpdateCartJob::dispatch($cart);
-        $cart = $cart->fresh();
-        $cart->load('cartItems.product');
 
-        return $this->success(new CartResource($cart));
+        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order','paymentMethods'])));
     }
 
     /***************************************************************************************
@@ -167,10 +165,8 @@ class CartItemController extends Controller
         $cartItem = $cart->cartItems()->where('product_id', $product->id)->firstOrFail();
         $cartItem->updateMe(['quantity' => $data['item']['quantity']]);
         UpdateCartJob::dispatch($cart);
-        $cart = $cart->fresh();
-        $cart->load('cartItems.product');
 
-        return $this->success(new CartResource($cart));
+        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order','paymentMethods'])));
     }
 
     /***************************************************************************************
