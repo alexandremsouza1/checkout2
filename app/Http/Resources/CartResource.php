@@ -25,7 +25,7 @@ class CartResource extends JsonResource
             'shipping' => $this->shipping ? displayMoney($this->shipping) : null,
             'cartItems' => CartItemResource::collection($this->whenLoaded('cartItems')),
             'order' => new OrderResource($this->whenLoaded('order')),
-            //'paymentMethods' => $this->paymentMethods,
+            'paymentMethods' => PaymentMethodResource::collection($this->whenLoaded('paymentMethods')),
             //'deliveries' => new DeliveryResource($this->whenLoaded('deliveries')),
         ];
     }

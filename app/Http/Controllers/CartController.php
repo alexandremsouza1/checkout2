@@ -6,7 +6,7 @@ use App\Facades\Customer;
 use App\Facades\Product;
 use App\Http\Requests\CartRequest;
 use App\Http\Resources\CartResource;
-use App\Jobs\CreateCartJob;
+use App\Jobs\UpdateCartJob;
 use App\Models\Cart;
 use App\Services\CartService;
 use App\Services\CustomerService;
@@ -71,7 +71,8 @@ class CartController extends Controller
         if(!$cart) {
             return $this->error([],'Esse usuário não possui carrinho ativo.');
         }
-        return $this->success(new CartResource($cart->load(['cartItems.product', 'order'])));
+        UpdateCartJob::dispatch($cart->client_id);
+        return $this->success(new CartResource($cart->load(['cartItems.product', 'order', 'paymentMethods'])));
     }
 
     /***************************************************************************************
@@ -135,7 +136,7 @@ class CartController extends Controller
         }
         $data['items'] = $addItems;
         $cart = $this->cartService->getOrCreateCart($data);
-        CreateCartJob::dispatch($cart->client_id);
+        UpdateCartJob::dispatch($cart->client_id);
 
         return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order'])));
     }
@@ -146,7 +147,7 @@ class CartController extends Controller
     public function update(Cart $cart, CartRequest $request)
     {
         $cart->updateMe($request->validated());
-
+        UpdateCartJob::dispatch($cart->client_id);
         return $this->success(new CartResource($cart->load(['cartItems.product', 'order'])));
     }
 
