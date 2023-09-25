@@ -135,11 +135,11 @@ class CartController extends Controller
             }
             $data['items'] = $addItems;
         }
-        if(empty($data['items'])) {
-            $this->cartService->clearCart($data['clientId']);
-        }
-
+    
         $cart = $this->cartService->getOrCreateCart($data);
+        if(empty($data['items'])) {
+            $cart->cartItems()->delete();
+        }
         UpdateCartJob::dispatch($cart->client_id);
 
         return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order','paymentMethods'])));

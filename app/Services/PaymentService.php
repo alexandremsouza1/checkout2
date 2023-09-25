@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PaymentMethods;
 use App\Integrations\SourceSap;
 use App\Models\Cart;
 use App\Repositories\PaymentRepository;
@@ -9,6 +10,14 @@ use App\Repositories\PaymentRepository;
 class PaymentService extends AbstractService
 {
 
+  const PAYMENT_METHODS = [
+    'A' => 'bankSlip',
+    'N' => 'pix',
+    'X' => 'credit',
+    'Y' => 'debit'
+    // 'I' => 'financing',
+    // 'Z' => 'non_authenticated_debit'
+  ];
 
   private $paymentRepository;
 
@@ -29,6 +38,9 @@ class PaymentService extends AbstractService
     }
     foreach ($conditions as $key => $condition) {
       if(is_array($condition)){
+        if(!isset(self::PAYMENT_METHODS[$condition['FormaPagamento']])){
+          continue;
+        }
         $hash = md5($cart->id.$key.$condition['CondicaoPagamento']);
         $total = $cart->total;
         $partialTotal = $condition['QtdeParcelas'] ? ($total / $condition['QtdeParcelas']) : $total;
@@ -43,7 +55,7 @@ class PaymentService extends AbstractService
           'payment_method_description' => $condition['DescFormaPagamento'],
           'payment_condition' => $condition['CondicaoPagamento'],
           'fee' => $condition['Encargo'],
-          'payment_method' => $condition['FormaPagamento'],
+          'payment_method' => self::PAYMENT_METHODS[$condition['FormaPagamento']],
           'message' => $condition['Message'],
           'block_reason' => $condition['MotivoBloqueio'],
           'number' => $condition['Number'],
@@ -58,5 +70,5 @@ class PaymentService extends AbstractService
     }
   }
 
- 
+
 }

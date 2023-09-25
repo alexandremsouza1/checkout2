@@ -42,8 +42,27 @@ class UpdateCartJob implements ShouldQueue
     public function handle(PaymentService $paymentService,CartService $cartService)
     {
         $cart = $cartService->findCartByClientId($this->clientId);
-        $payment = $paymentService->create($this->clientId,$cart);
-        return $payment;
+        if(!$cart->paymentMethods()->count()){
+            $paymentService->create($this->clientId,$cart);
+        }
+        $paymentDefault = $this->getPaymentMethodDefault($cart);
+
+        $items = $cart->cartItems()->get();
+        foreach ($items as $item) {
+            $item->price = $item->price + $item->price * $paymentDefault->fee; 
+            $item->save();
+        }
+    }
+
+    private function getPaymentMethodDefault($cart)
+    {
+        $paymentDefault = $cart->paymentMethods()->where('default',true)->first();
+        if(!$paymentDefault){
+            $paymentDefault = $cart->paymentMethods()->first();
+            $paymentDefault->default = true;
+            $paymentDefault->save();
+        }
+        return $paymentDefault;
     }
 
 }

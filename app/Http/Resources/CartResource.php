@@ -6,15 +6,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class CartResource extends JsonResource
 {
-    const PAYMENT_METHODS = [
-        'A' => 'bankSlip',
-        'N' => 'pix',
-        'X' => 'credit',
-        'Y' => 'debit'
-        // 'I' => 'financing',
-        // 'Z' => 'non_authenticated_debit'
-      ];
-
     /**
      * Transform the resource into an array.
      *
@@ -44,10 +35,7 @@ class CartResource extends JsonResource
     {
       $resources = [];
       foreach ($conditions as $condition) {
-        if(!isset(self::PAYMENT_METHODS[$condition['payment_method']])){
-          continue;
-        }
-        $condicaoPagamento = self::PAYMENT_METHODS[$condition['payment_method']];
+        $condicaoPagamento = $condition['payment_method'];
         if (!isset($resources[$condicaoPagamento])) {
           $resources[$condicaoPagamento] = [];
         }
