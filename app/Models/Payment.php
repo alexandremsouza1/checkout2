@@ -32,7 +32,7 @@ class Payment extends BaseModel
     'name',
     'client_id',
     'description',
-    'paymentMethod_description',
+    'payment_method_description',
     'payment_condition',
     'fee',
     'payment_method',

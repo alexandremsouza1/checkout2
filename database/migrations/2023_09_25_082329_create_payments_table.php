@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('code')->nullable();
             $table->string('client_id')->nullable();
             $table->string('description')->nullable();
-            $table->string('paymentMethod_description')->nullable();
+            $table->string('payment_method_description')->nullable();
             $table->string('payment_condition')->nullable();
             $table->decimal('fee', 8, 2)->nullable();
             $table->string('payment_method')->nullable();
