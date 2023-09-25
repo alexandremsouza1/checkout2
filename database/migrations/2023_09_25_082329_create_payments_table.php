@@ -34,7 +34,8 @@ return new class extends Migration
             $table->integer('days')->nullable();
             $table->integer('installments')->nullable();
             $table->string('type')->nullable();
-            $table->integer('total')->nullable();
+            $table->integer('total_amount')->nullable();
+            $table->integer('partial_amount')->nullable();
             $table->timestamps();
 
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');

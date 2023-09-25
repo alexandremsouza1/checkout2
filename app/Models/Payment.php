@@ -43,7 +43,8 @@ class Payment extends BaseModel
     'days',
     'installments',
     'type',
-    'total',
+    'partial_amount',
+    'total_amount',
   ];
 
   public function cart()

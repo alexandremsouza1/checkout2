@@ -30,7 +30,8 @@ class PaymentService extends AbstractService
     foreach ($conditions as $key => $condition) {
       if(is_array($condition)){
         $hash = md5($cart->id.$key.$condition['CondicaoPagamento']);
-        $total = $cart->total*$condition['Encargo'];
+        $total = $cart->total;
+        $partialTotal = $condition['QtdeParcelas'] ? ($total / $condition['QtdeParcelas']) : $total;
         $this->paymentRepository->store([
           'hash' => $hash,
           'cart_id' => $cart->id,
@@ -50,7 +51,8 @@ class PaymentService extends AbstractService
           'days' => $condition['QtdDias'],
           'installments' => $condition['QtdeParcelas'],
           'type' => $condition['Type'],
-          'total' => $total,
+          'partial_amount' => $partialTotal,
+          'total_amount' => $total,
         ], 'hash');
       }
     }

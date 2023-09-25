@@ -30,6 +30,8 @@ class PaymentConditionsItemResource extends JsonResource
           'days' => $this->days,
           'installments' => $this->installments,
           'type' => $this->type,
+          'partialAmount' => $this->partial_amount,
+          'totalAmount' => $this->total_amount,
         ];
     }
 }
