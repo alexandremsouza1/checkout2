@@ -138,7 +138,7 @@ class CartController extends Controller
         $cart = $this->cartService->getOrCreateCart($data);
         UpdateCartJob::dispatch($cart->client_id);
 
-        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order'])));
+        return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order','paymentMethods'])));
     }
 
     /***************************************************************************************
@@ -148,7 +148,7 @@ class CartController extends Controller
     {
         $cart->updateMe($request->validated());
         UpdateCartJob::dispatch($cart->client_id);
-        return $this->success(new CartResource($cart->load(['cartItems.product', 'order'])));
+        return $this->success(new CartResource($cart->load(['cartItems.product', 'order','paymentMethods'])));
     }
 
     /***************************************************************************************
