@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('hash')->nullable();
             $table->unsignedBigInteger('cart_id');
             $table->string('name')->nullable();
+            $table->string('billing_app')->nullable();
+            $table->boolean('blocked')->nullable();
+            $table->string('code')->nullable();
             $table->string('client_id')->nullable();
             $table->string('description')->nullable();
             $table->string('paymentMethod_description')->nullable();

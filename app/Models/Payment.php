@@ -13,12 +13,22 @@ class Payment extends BaseModel
   protected $guarded = ['id'];
   protected $hidden = [];
   protected $dates = ['created_at', 'updated_at'];
-  protected $casts = [];
+  protected $casts = [
+    'default' => 'boolean',
+    'blocked' => 'boolean',
+    'total' => 'float',
+    'fee' => 'float',
+    'installments' => 'integer',
+    'days' => 'integer',
+    'number' => 'integer',
+  ];
   public $timestamps = true;
 
   protected $fillable = [
     'hash',
     'cart_id',
+    'billing_app',
+    'blocked',
     'name',
     'client_id',
     'description',
