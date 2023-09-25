@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Cart;
 use App\Services\CartService;
 use App\Services\PaymentService;
 use Faker\Provider\ar_EG\Payment;
@@ -21,17 +22,15 @@ class UpdateCartJob implements ShouldQueue
 
     public $paymentService;
 
-    private $clientId;
+    private $cart;
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $clientId)
+    public function __construct(Cart $cart)
     {
-        //$this->deliveryService = $deliveryService;
-        //$this->paymentService = $paymentService;
-        $this->clientId = $clientId;
+        $this->cart = $cart;
     }
 
     /**
@@ -39,19 +38,25 @@ class UpdateCartJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(PaymentService $paymentService,CartService $cartService)
+    public function handle(PaymentService $paymentService)
     {
-        $cart = $cartService->findCartByClientId($this->clientId);
-        if(!$cart->paymentMethods()->count()){
-            $paymentService->create($this->clientId,$cart);
+        if(!$this->cart->paymentMethods()->count()){
+            $paymentService->create($this->cart);
         }
-        $paymentDefault = $this->getPaymentMethodDefault($cart);
+        $paymentDefault = $this->getPaymentMethodDefault($this->cart);
 
-        $items = $cart->cartItems()->get();
-        foreach ($items as $item) {
-            $item->price = $item->price + $item->price * $paymentDefault->fee; 
+        $items = $this->cart->cartItems()->get();
+        foreach ($items as $item){
+            $new_price = $item->product->price * $item->quantity;
+            $item->price = $new_price * (1 + ($paymentDefault->fee / 100));
             $item->save();
         }
+ 
+        $paymentDefault->total_amount = $this->cart->total;
+        $paymentDefault->partial_amount = $paymentDefault->installments ? ($this->cart->total / $paymentDefault->installments) : $this->cart->total;
+        $paymentDefault->save();
+
+        $this->cart->fresh();
     }
 
     private function getPaymentMethodDefault($cart)

@@ -30,8 +30,9 @@ class PaymentService extends AbstractService
   }
 
 
-  public function create(string $clientId, Cart $cart)
+  public function create(Cart $cart)
   {
+    $clientId = $cart->client_id;
     $conditions = $this->sourceSap->getConditions($clientId);
     if(!$conditions){
       return;
@@ -42,8 +43,6 @@ class PaymentService extends AbstractService
           continue;
         }
         $hash = md5($cart->id.$key.$condition['CondicaoPagamento']);
-        $total = $cart->total;
-        $partialTotal = $condition['QtdeParcelas'] ? ($total / $condition['QtdeParcelas']) : $total;
         $this->paymentRepository->store([
           'hash' => $hash,
           'cart_id' => $cart->id,
@@ -62,9 +61,7 @@ class PaymentService extends AbstractService
           'default' => $condition['Padrao'],
           'days' => $condition['QtdDias'],
           'installments' => $condition['QtdeParcelas'],
-          'type' => $condition['Type'],
-          'partial_amount' => $partialTotal,
-          'total_amount' => $total,
+          'type' => $condition['Type']
         ], 'hash');
       }
     }

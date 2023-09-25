@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CartItemRequest;
 use App\Http\Resources\CartItemResource;
 use App\Http\Resources\CartResource;
+use App\Jobs\UpdateCartJob;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Services\CartService;
@@ -92,7 +93,7 @@ class CartItemController extends Controller
         $product = $this->productService->getOrCreateProduct($data['clientId'],$data['item']);
         $data['product_id'] = $product->id;
         CartItem::makeOne($cart, $data);
-
+        UpdateCartJob::dispatch($cart);
         $cart = $cart->fresh();
         $cart->load('cartItems.product');
 
@@ -165,7 +166,7 @@ class CartItemController extends Controller
         }
         $cartItem = $cart->cartItems()->where('product_id', $product->id)->firstOrFail();
         $cartItem->updateMe(['quantity' => $data['item']['quantity']]);
-
+        UpdateCartJob::dispatch($cart);
         $cart = $cart->fresh();
         $cart->load('cartItems.product');
 

@@ -71,7 +71,7 @@ class CartController extends Controller
         if(!$cart) {
             return $this->error([],'Esse usuário não possui carrinho ativo.');
         }
-        UpdateCartJob::dispatch($cart->client_id);
+         UpdateCartJob::dispatch($cart);
         return $this->success(new CartResource($cart->load(['cartItems.product', 'order', 'paymentMethods'])));
     }
 
@@ -140,7 +140,7 @@ class CartController extends Controller
         if(empty($data['items'])) {
             $cart->cartItems()->delete();
         }
-        UpdateCartJob::dispatch($cart->client_id);
+        UpdateCartJob::dispatch($cart);
 
         return $this->success(new CartResource($cart->fresh()->load(['cartItems.product', 'order','paymentMethods'])));
     }
@@ -151,7 +151,7 @@ class CartController extends Controller
     public function update(Cart $cart, CartRequest $request)
     {
         $cart->updateMe($request->validated());
-        UpdateCartJob::dispatch($cart->client_id);
+         UpdateCartJob::dispatch($cart);
         return $this->success(new CartResource($cart->load(['cartItems.product', 'order','paymentMethods'])));
     }
 

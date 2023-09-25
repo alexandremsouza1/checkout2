@@ -24,7 +24,6 @@ return new class extends Migration
             $table->integer('unit_price')->nullable();
             $table->integer('points')->nullable();
             $table->string('image')->nullable();
-            $table->integer('quantity')->nullable();
             $table->integer('suggested_quantity')->nullable();
             $table->integer('stock')->default(0);
             $table->boolean('action')->default(false);
