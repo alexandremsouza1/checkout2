@@ -51,6 +51,16 @@ class Payment extends BaseModel
     'active'
   ];
 
+  public function getTotalAmountAttribute($value)
+  {
+    return round($value);
+  }
+
+  public function getPartialAmountAttribute($value)
+  {
+    return round($value);
+  }
+
   public function cart()
   {
       return $this->belongsTo(Cart::class, 'cart_id');

@@ -20,7 +20,7 @@ class Product extends BaseModel implements ProductContract
 
     public function getPrice()
     {
-        return $this->price;
+        return round($this->price);
     }
 
     public function getName()

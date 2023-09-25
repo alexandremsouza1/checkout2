@@ -112,4 +112,15 @@ class CartItem extends BaseModel
         $this->quantity = $newQuantity;
         $this->save();
     }
+
+
+    public function getPriceAttribute($value)
+    {
+        return round($value);
+    }
+
+    public function getQuantityAttribute($value)
+    {
+        return round($value);
+    }
 }

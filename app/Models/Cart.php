@@ -243,4 +243,40 @@ class Cart extends BaseModel
     {
         return $this->discount > 0;
     }
+
+    // 'items_subtotal' => 'float',
+    public function getItemsSubtotalAttribute($value)
+    {
+        return round($value);
+    }
+    // 'tax_rate' => 'float',
+    public function getTaxRateAttribute($value)
+    {
+        return round($value);
+    }
+    // 'tax' => 'float',
+    public function getTaxAttribute($value)
+    {
+        return round($value);
+    }
+    // 'total' => 'float',
+    public function getTotalAttribute($value)
+    {
+        return round($value);
+    }
+    // 'discount' => 'float',
+    public function getDiscountAttribute($value)
+    {
+        return round($value);
+    }
+    // 'shipping' => 'float',
+    public function getShippingAttribute($value)
+    {
+        return round($value);
+    }
+    // 'total_products' => 'float',
+    public function getTotalProductsAttribute($value)
+    {
+        return round($value);
+    }
 }
