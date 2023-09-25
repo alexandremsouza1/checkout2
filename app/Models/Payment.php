@@ -9,10 +9,10 @@ use App\Contracts\Customer as CustomerContract;
 
 class Payment extends BaseModel
 {
+  use SoftDeletes;
 
   protected $guarded = ['id'];
-  protected $hidden = [];
-  protected $dates = ['created_at', 'updated_at'];
+  protected $dates = ['created_at', 'updated_at', 'deleted_at'];
   protected $casts = [
     'default' => 'boolean',
     'blocked' => 'boolean',
@@ -22,6 +22,8 @@ class Payment extends BaseModel
     'days' => 'integer',
     'number' => 'integer',
     'active' => 'boolean',
+    'partial_amount' => 'float',
+    'total_amount' => 'float',
   ];
   public $timestamps = true;
 

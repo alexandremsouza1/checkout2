@@ -20,7 +20,10 @@ class CartItem extends BaseModel
     protected $guarded = ['id'];
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $casts = [];
+    protected $casts = [
+        'price' => 'float',
+        'quantity' => 'integer',
+    ];
     public $timestamps = true;
 
     /***************************************************************************************
@@ -35,18 +38,21 @@ class CartItem extends BaseModel
             $cartItem->cart->setDiscount();
             $cartItem->cart->setTax();
             $cartItem->cart->setTotal();
+            $cartItem->cart->setTotalProducts();
         });
         static::updated(function ($cartItem) {
             $cartItem->cart->setItemSubtotal();
             $cartItem->cart->setDiscount();
             $cartItem->cart->setTax();
             $cartItem->cart->setTotal();
+            $cartItem->cart->setTotalProducts();
         });
         static::deleted(function ($cartItem) {
             $cartItem->cart->setItemSubtotal();
             $cartItem->cart->setDiscount();
             $cartItem->cart->setTax();
             $cartItem->cart->setTotal();
+            $cartItem->cart->setTotalProducts();
         });
     }
 
@@ -81,7 +87,7 @@ class CartItem extends BaseModel
         $cartItem = $cart->cartItems()->where($productForeignKey, $product->id)->first();
 
         if (!is_null($cartItem)) {
-            $data['quantity'] = Arr::get($data, 'quantity') + $cartItem->quantity;
+            $data['quantity'] = Arr::get($data['item'], 'quantity') + $cartItem->quantity;
             $cartItem->updateMe($data);
             return $cartItem;
         }
@@ -89,7 +95,7 @@ class CartItem extends BaseModel
         $cartItem = new CartItem;
         $cartItem->{\App\Facades\Cart::getForeignKey()} = $cart->id;
         $cartItem->{$productForeignKey} = $product->id;
-        $cartItem->quantity = Arr::get($data, 'quantity', 1);
+        $cartItem->quantity = Arr::get($data['item'], 'quantity', 1);
         $cartItem->price = $product->getPrice() * $cartItem->quantity;
         $cartItem->token = Token::generate();
         $cartItem->save();
@@ -99,7 +105,8 @@ class CartItem extends BaseModel
 
     public function updateMe(array $data)
     {
-        $newQuantity = !empty($data['quantity']) ? $data['quantity'] : $this->quantity;
+        $quantity = Arr::get($data['item'], 'quantity');
+        $newQuantity = !empty($quantity) ? $quantity : $this->quantity;
         $this->price = $this->product->getPrice() * $newQuantity;
         $this->customer_note = Arr::has($data, 'customer_note') ? $data['customer_note'] : $this->customer_note;
         $this->quantity = $newQuantity;

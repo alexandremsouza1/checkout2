@@ -32,6 +32,7 @@ class UpdateCartJob implements ShouldQueue
     public function __construct(Cart $cart)
     {
         $this->cart = $cart;
+        $this->onConnection($this->resolveQueueConnection());
     }
 
     /**
@@ -44,45 +45,40 @@ class UpdateCartJob implements ShouldQueue
         if(!$this->cart->paymentMethods()->count()){
             $paymentService->create($this->cart);
         }
-        $paymentSelected = $this->getSelectedPaymentMethods($this->cart);
+
+ 
+        $totalProducts = $this->cart->total_products;
+        $this->bootPaymentMethods($this->cart,$totalProducts);
+
+        $paymentSelected = $this->cart->paymentMethods()->where('active', true)->first();
+        if(!$paymentSelected) {
+            $paymentSelected = $this->cart->paymentMethods()->first();
+            $paymentSelected->active = true;
+            $paymentSelected->save();
+        }
 
         $items = $this->cart->cartItems()->get();
-        foreach ($items as $item){
+        foreach ($items as $item) {
             $new_price = $item->product->price * $item->quantity;
             $item->price = Price::setValueWithFee($new_price, $paymentSelected->fee);
             $item->save();
         }
- 
-        $this->cart->fresh();
     }
 
-    private function getSelectedPaymentMethods($cart)
+    private function bootPaymentMethods($cart,$totalProducts)
     {
-        $default = null;
-        $active = null;
         $payments = $cart->paymentMethods()->get();
-        foreach ($payments as $payment){
-            $payment->total_amount = $this->cart->total;
-            $value_per_installment = $payment->installments ? $this->cart->total / $payment->installments : $this->cart->total;
-            $payment->partial_amount = Price::setValueWithFee($value_per_installment, $payment->fee);
-            if($payment->active) {
-                $active = $payment;
-            }
-            if($payment->default) {
-                $default = $payment;
-            }
+        foreach ($payments as $payment) {
+            $valuePerInstallment = $payment->installments ?  $totalProducts / $payment->installments : $totalProducts;
+            $payment->partial_amount = Price::setValueWithFee($valuePerInstallment, $payment->fee);
+            $payment->total_amount = Price::setValueWithFee($totalProducts, $payment->fee);
             $payment->save();
         }
+    }
 
-        if($active){
-            return $active;
-        }
-        if($default){
-            return $default;
-        }
-        $selected = $payments->first();
-        $selected->active = true;
-        return $selected->save();
+    protected function resolveQueueConnection()
+    {
+        return 'sync';
     }
 
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedInteger('discount')->default(0);
             $table->string('customer_note')->nullable();
-            $table->integer('price');
+            $table->decimal('price', 8, 2)->nullable();
             $table->integer('quantity');
             $table->string('token');
             $table->timestamps();

@@ -22,7 +22,15 @@ class Cart extends BaseModel
     protected $guarded = ['id'];
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
     protected $dates = ['created_at', 'updated_at', 'deleted_at'];
-    protected $casts = [];
+    protected $casts = [
+        'items_subtotal' => 'float',
+        'tax_rate' => 'float',
+        'tax' => 'float',
+        'total' => 'float',
+        'discount' => 'float',
+        'shipping' => 'float',
+        'total_products' => 'float',
+    ];
     public $timestamps = true;
 
     /***************************************************************************************
@@ -101,6 +109,7 @@ class Cart extends BaseModel
             $this->discount = $coupon->calculateDiscount($this);
             $this->setTax();
             $this->setTotal();
+            $this->setTotalProducts();
         }
     }
 
@@ -116,6 +125,7 @@ class Cart extends BaseModel
         $this->discount = 0;
         $this->setTax();
         $this->setTotal();
+        $this->setTotalProducts();
     }
 
     public function updateZipCode(array $data)
@@ -137,6 +147,7 @@ class Cart extends BaseModel
     {
         $this->shipping = Arr::has($data, 'shipping') ? $data['shipping']['price'] : $this->shipping;
         $this->setTotal();
+        $this->setTotalProducts();
     }
 
     public function updateEmail(array $data)
@@ -203,6 +214,14 @@ class Cart extends BaseModel
     public function setTotal()
     {
         $this->total = $this->items_subtotal + $this->shipping - $this->discount + $this->tax;
+        $this->save();
+    }
+
+    public function setTotalProducts()
+    {
+        $this->total_products = $this->cartItems->sum(function (CartItem $cartItem) {
+            return $cartItem->product->price * $cartItem->quantity;
+        });
         $this->save();
     }
 

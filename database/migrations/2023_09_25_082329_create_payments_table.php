@@ -34,10 +34,11 @@ return new class extends Migration
             $table->integer('days')->nullable();
             $table->integer('installments')->nullable();
             $table->string('type')->nullable();
-            $table->integer('total_amount')->nullable();
-            $table->integer('partial_amount')->nullable();
+            $table->decimal('total_amount', 8, 2)->nullable();
+            $table->decimal('partial_amount', 8, 2)->nullable();
             $table->boolean('active')->default(false);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
         });

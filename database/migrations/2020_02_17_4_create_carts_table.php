@@ -18,13 +18,13 @@ return new class extends Migration
 
             $table->string('client_id')->nullable();
             $table->unsignedBigInteger('coupon_id')->nullable();
-
-            $table->integer('items_subtotal')->default(0);
-            $table->integer('tax_rate')->default(0);
-            $table->integer('tax')->default(0);
-            $table->integer('total')->default(0);
-            $table->integer('discount')->default(0);
-            $table->integer('shipping')->default(0);
+            $table->decimal('items_subtotal', 8, 2)->nullable();
+            $table->decimal('tax_rate', 8, 2)->nullable();
+            $table->decimal('tax', 8, 2)->nullable();
+            $table->decimal('total', 8, 2)->nullable();
+            $table->decimal('total_products', 8, 2)->nullable();
+            $table->decimal('discount', 8, 2)->nullable();
+            $table->decimal('shipping', 8, 2)->nullable();
             $table->string('customer_email')->nullable();
             $table->string('shipping_first_name')->nullable();
             $table->string('shipping_last_name')->nullable();

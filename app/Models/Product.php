@@ -13,7 +13,9 @@ class Product extends BaseModel implements ProductContract
     protected $guarded = ['id'];
     protected $hidden = [];
     protected $dates = ['created_at', 'updated_at'];
-    protected $casts = [];
+    protected $casts = [
+        'price' => 'float'
+    ];
     public $timestamps = true;
 
     public function getPrice()
