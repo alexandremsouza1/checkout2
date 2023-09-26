@@ -20,7 +20,32 @@ class CartPaymentController extends Controller
         $this->cartService = $cartService;
     }
 
-   
+    /**
+     * @OA\Put(
+     *     path="/carts/payment",
+     *     summary="Atualiza o pagamento do carrinho",
+     *     tags={"Carrinho"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="clientId", type="string", example="0068000249"),
+     *             @OA\Property(property="paymentCondition", type="string", example="XX03"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Pagamento atualizado com sucesso",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erro na solicitação",
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Não autorizado",
+     *     ),
+     * )
+     */
     public function update(CartPaymentRequest $request)
     {
         $data = $request->validated();
