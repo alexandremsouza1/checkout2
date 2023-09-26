@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
+use App\Http\Controllers\CartPaymentController;
 use App\Http\Controllers\CartShippingController;
 use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,7 @@ Route::delete('/carts', [CartController::class, 'delete']); //carts.delete'
 Route::put('/carts/zipcode', [CartZipCodeController::class, 'update']); //carts.zipcode.update'
 Route::put('/carts/shipping', [CartShippingController::class, 'update']); //carts.shipping.update'
 Route::put('/carts/email', [CartEmailController::class, 'update']); //carts.email.update'
+Route::put('/carts/payment', [CartPaymentController::class, 'update']); //carts.email.update'
 Route::post('/carts/options', [CartOptionsController::class, 'store']); //carts.options.store'
 
 Route::put('/carts/coupon-code', [CartCouponController::class, 'update']); //carts.coupon.update'

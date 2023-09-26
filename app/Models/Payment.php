@@ -65,4 +65,10 @@ class Payment extends BaseModel
   {
       return $this->belongsTo(Cart::class, 'cart_id');
   }
+
+  public function activePaymentMethods($data)
+  {
+    $this->where('cart_id', $data['cartId'])->update(['active' => false]);
+    $this->where('cart_id', $data['cartId'])->whereIn('id', $data['paymentMethods'])->update(['active' => true]);
+  }
 }
