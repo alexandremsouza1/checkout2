@@ -509,6 +509,46 @@
                 ]
             }
         },
+        "/carts/payment": {
+            "put": {
+                "tags": [
+                    "Carrinho"
+                ],
+                "summary": "Atualiza o pagamento do carrinho",
+                "operationId": "b92d4e2d46ca788059b9157c301afd1c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "clientId": {
+                                        "type": "string",
+                                        "example": "0068000249"
+                                    },
+                                    "paymentCondition": {
+                                        "type": "string",
+                                        "example": "XX03"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Pagamento atualizado com sucesso"
+                    },
+                    "400": {
+                        "description": "Erro na solicitação"
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                }
+            }
+        },
         "/api/carts/shipping": {
             "put": {
                 "tags": [
